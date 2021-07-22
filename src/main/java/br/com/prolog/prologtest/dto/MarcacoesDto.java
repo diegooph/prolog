@@ -1,5 +1,7 @@
 package br.com.prolog.prologtest.dto;
 
+import br.com.prolog.prologtest.util.DataUtil;
+
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 
@@ -11,13 +13,17 @@ public class MarcacoesDto {
 
     @Override
     public String toString() {
-
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
-
-        return "MarcacoesDto\n" +
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        String dataInicialFormat = "";
+        if (dataInicial != null)
+            dataInicialFormat = simpleDateFormat.format(DataUtil.localDateTimeToDate(dataInicial));
+        String dataFinalFormat1 = "";
+        if (dataFinal != null)
+            dataFinalFormat1 = simpleDateFormat.format(DataUtil.localDateTimeToDate(dataFinal));
+        return "\n" +
                 "codigoTipoMarcacao: " + codigoTipoMarcacao +
-                "\n |Inicio=" +  simpleDateFormat.format(dataInicial)  +"|"+
-                "\n |Fim=" +  simpleDateFormat.format(dataFinal) +"|"+
+                "\n |Inicio=" + dataInicialFormat +"|"+
+                "\n |Fim=" + dataFinalFormat1 +"|"+
                 '}';
     }
 }

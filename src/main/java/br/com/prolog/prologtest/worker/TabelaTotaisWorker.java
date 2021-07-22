@@ -10,11 +10,11 @@ import br.com.prolog.prologtest.dto.TabelaTotalDto;
 import br.com.prolog.prologtest.entity.Colaborador;
 import br.com.prolog.prologtest.entity.Marcacao;
 import br.com.prolog.prologtest.entity.TipoMarcacaoEnum;
+import br.com.prolog.prologtest.util.DataUtil;
 
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,7 +42,7 @@ public class TabelaTotaisWorker {
         Colaborador colaborador = colaboradorDao.getColaboradorByNome(nome);
         List<Marcacao> marcacoesColaborador =
                 marcacaoDao.findAllByColaborador_CpfAndDataMarcacaoBetweenOrderByDataMarcacao(colaborador.getCpf(),
-                        localDateToDate(initDate), localDateToDate(endDate));
+                        DataUtil.localDateTimeToDate(initDate), DataUtil.localDateTimeToDate(endDate));
 
         return gerarRelatorioPorListaMarcacaoDoColaborador(marcacoesColaborador, colaborador);
     }
@@ -53,25 +53,31 @@ public class TabelaTotaisWorker {
 
         List<Marcacao> marcacoesDeInicio = marcacoesColaborador.stream().filter(m ->
                 m.getTipoMarcacaoEnum().equals(TipoMarcacaoEnum.MARCACAO_INICIO))
-                .toList();
+                .collect(Collectors.toList());
         List<Marcacao> marcacoesDeFim = marcacoesColaborador.stream().filter(m ->
                 m.getTipoMarcacaoEnum().equals(TipoMarcacaoEnum.MARCACAO_FIM))
-                .toList();
+                .collect(Collectors.toList());
 
 
-        relatorioDto.diasIniciaisMarcacoes = marcacoesDeInicio.stream().map(m ->
-                simpleDateFormat.format(m.getDataMarcacao())).distinct()
-                .toList();
+
         List<MarcacoesDto> listaMarcacoesDto = new ArrayList<>();
         for (Marcacao marcacaoInicio : marcacoesDeInicio) {
+            if (marcacaoInicio.getMarcacaoVinculoInicio() == null)continue;
             Marcacao marcacaoFim = marcacaoInicio.getMarcacaoVinculoInicio().getMarcacaoFim();
             MarcacoesDto marcacoesDto = new MarcacoesDto();
             if (marcacaoFim != null){
                 marcacoesDeFim.removeIf(m->m.getCodigo() == marcacaoFim.getCodigo());
-                marcacoesDto.dataFinal = dateToLocalDate(marcacaoFim.getDataMarcacao());
+                marcacoesDto.dataFinal = DataUtil.dateToLocalDate(marcacaoFim.getDataMarcacao());
             }
             marcacoesDto.codigoTipoMarcacao = Math.toIntExact(marcacaoInicio.getMarcacaoTipo().getCodigo());
-            marcacoesDto.dataInicial = dateToLocalDate(marcacaoInicio.getDataMarcacao());
+            marcacoesDto.dataInicial = DataUtil.dateToLocalDate(marcacaoInicio.getDataMarcacao());
+            listaMarcacoesDto.add(marcacoesDto);
+        }
+        for (Marcacao marcacaoFinal : marcacoesDeFim) {
+            MarcacoesDto marcacoesDto = new MarcacoesDto();
+            marcacoesDto.dataFinal = DataUtil.dateToLocalDate(marcacaoFinal.getDataMarcacao());
+            marcacoesDto.codigoTipoMarcacao = Math.toIntExact(marcacaoFinal.getCodigo());
+
             listaMarcacoesDto.add(marcacoesDto);
         }
         relatorioDto.listaMarcacoesDto = listaMarcacoesDto;
@@ -83,27 +89,10 @@ public class TabelaTotaisWorker {
         tabelaTotalDto.tempoRecomendado = "";
         tabelaTotalDto.descricao = "";
 
-
+        relatorioDto.tabelaTotalDto = tabelaTotalDto;
         return relatorioDto;
     }
 
-    public static Date localDateToDate(LocalDateTime localDateTime) {
-        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
-    }
 
-    public static LocalDateTime dateToLocalDate(Date date) {
-        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-    }
-
-    public static String showDuration(LocalDateTime start, LocalDateTime end) {
-
-        Duration diff = Duration.between(start, end);
-        String hms = String.format("%d:%02d:%02d",
-                diff.toHours(),
-                diff.toMinutesPart(),
-                diff.toSecondsPart());
-        System.out.println(hms);
-        return hms;
-    }
 
 }
