@@ -14,11 +14,11 @@ public class Marcacao {
     @NotNull
     private long codigo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cod_tipo_marcacao", nullable = false)
     private MarcacaoTipo marcacaoTipo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cpf_colaborador", nullable = false)
     private Colaborador colaborador;
 

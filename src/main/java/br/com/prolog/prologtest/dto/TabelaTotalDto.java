@@ -8,4 +8,14 @@ public class TabelaTotalDto {
     public String periodoTotal;
     public String horasNoturnasClt;
 
+    @Override
+    public String toString() {
+        return "\n\nTabelaTotalDto{" +
+                " \n codigoMarcacaoTipo=" + codigoMarcacaoTipo +
+                " \n descricao='" + descricao + '\'' +
+                " \n tempoRecomendado='" + tempoRecomendado + '\'' +
+                " \n periodoTotal='" + periodoTotal + '\'' +
+                " \n horasNoturnasClt='" + horasNoturnasClt + '\'' +
+                '}';
+    }
 }

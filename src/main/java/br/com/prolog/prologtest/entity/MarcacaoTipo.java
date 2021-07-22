@@ -52,7 +52,7 @@ public class MarcacaoTipo {
     public String toString() {
         return "MarcacaoTipo{" +
                 "codigo=" + codigo +
-                ", nome='" + nome + '\'' +
+                ", Descrição='" + nome + '\'' +
                 ", tempoRecomendadoMinutos=" + tempoRecomendadoMinutos +
                 '}';
     }

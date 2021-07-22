@@ -17,7 +17,7 @@ public class DataUtil {
         return simpleDateFormat.format(Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
     }
 
-    public static LocalDateTime dateToLocalDate(Date date) {
+    public static LocalDateTime dateToLocalDateTime(Date date) {
         return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 
@@ -28,7 +28,6 @@ public class DataUtil {
                 diff.toHours(),
                 diff.toMinutesPart(),
                 diff.toSecondsPart());
-        System.out.println(hms);
         return hms;
     }
 }

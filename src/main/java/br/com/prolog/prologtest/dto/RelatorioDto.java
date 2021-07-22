@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 public class RelatorioDto {
     public String nomeColaborador;
     public List<MarcacoesDto> listaMarcacoesDto;
-    public TabelaTotalDto tabelaTotalDto;
+    public List<TabelaTotalDto> tabelaTotalDto;
 
     public String print() {
         StringBuilder print = new StringBuilder("RelatorioDto" +
@@ -22,7 +22,7 @@ public class RelatorioDto {
             } else {
                 return m.dataInicial.toLocalDate();
             }
-        }).distinct()
+        }).distinct().sorted()
                 .collect(Collectors.toList());
         for (LocalDate collectInitDate : collectInitDates) {
             List<MarcacoesDto> listaMarcacoesDto = this.listaMarcacoesDto.stream().filter(m -> {
